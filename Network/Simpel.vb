@@ -16,8 +16,6 @@ Public Class Simple
         Me.Neurons.Clear()
         Me.Neurons.Add(New Neuron(NeuronType.Hidden))
         Me.Neurons.Add(New Neuron(NeuronType.Hidden))
-        Me.Neurons.Add(New Neuron(NeuronType.Hidden))
-        Me.Neurons.Add(New Neuron(NeuronType.Hidden))
         Me.Neurons.Add(New Neuron(NeuronType.Output))
         Me.Randomize()
     End Sub
@@ -28,15 +26,11 @@ Public Class Simple
         If (x.Length = y.Length) Then
             Dim NH1 As Neuron = Me.GetNeuron(NeuronType.Hidden, 0)
             Dim NH2 As Neuron = Me.GetNeuron(NeuronType.Hidden, 1)
-            Dim NH3 As Neuron = Me.GetNeuron(NeuronType.Hidden, 2)
-            Dim NH4 As Neuron = Me.GetNeuron(NeuronType.Hidden, 3)
             Dim NOUT As Neuron = Me.GetNeuron(NeuronType.Output)
             For i As Integer = 0 To x.Length - 1
                 NH1.Inputs = New Double() {x(i), y(i)}
                 NH2.Inputs = New Double() {x(i), y(i)}
-                NH3.Inputs = New Double() {x(i), y(i)}
-                NH4.Inputs = New Double() {x(i), y(i)}
-                NOUT.Inputs = New Double() {NH1.Output, NH2.Output, NH3.Output, NH4.Output}
+                NOUT.Inputs = New Double() {NH1.Output, NH2.Output}
                 RaiseEvent TrainingCycle(i, x(i), y(i), NOUT.Output)
             Next
         End If
@@ -47,8 +41,6 @@ Public Class Simple
 
             Dim NH1 As Neuron = Me.GetNeuron(NeuronType.Hidden, 0)
             Dim NH2 As Neuron = Me.GetNeuron(NeuronType.Hidden, 1)
-            Dim NH3 As Neuron = Me.GetNeuron(NeuronType.Hidden, 2)
-            Dim NH4 As Neuron = Me.GetNeuron(NeuronType.Hidden, 3)
             Dim NOUT As Neuron = Me.GetNeuron(NeuronType.Output)
 
             Me.Training = True
@@ -59,9 +51,7 @@ Public Class Simple
                 For i As Integer = 0 To Results.Length - 1
                     NH1.Inputs = New Double() {x(i), y(i)}
                     NH2.Inputs = New Double() {x(i), y(i)}
-                    NH3.Inputs = New Double() {x(i), y(i)}
-                    NH4.Inputs = New Double() {x(i), y(i)}
-                    NOUT.Inputs = New Double() {NH1.Output, NH2.Output, NH3.Output, NH4.Output}
+                    NOUT.Inputs = New Double() {NH1.Output, NH2.Output}
 
                     If (epoch Mod 100 = 0 And epoch <> 0) Then
                         RaiseEvent TrainingCycle(i, x(i), y(i), NOUT.Output)
@@ -72,13 +62,9 @@ Public Class Simple
 
                     NH1.Error = Sigmoid.F(NH1.Output) * NOUT.Error * NOUT.Weights(0)
                     NH2.Error = Sigmoid.F(NH2.Output) * NOUT.Error * NOUT.Weights(1)
-                    NH3.Error = Sigmoid.F(NH3.Output) * NOUT.Error * NOUT.Weights(0)
-                    NH4.Error = Sigmoid.F(NH4.Output) * NOUT.Error * NOUT.Weights(1)
-
+                    
                     NH1.Cycle()
                     NH2.Cycle()
-                    NH3.Cycle()
-                    NH4.Cycle()
                 Next
             Loop Until Not Me.Training
         Catch ex As Exception
